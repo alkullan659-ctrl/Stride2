@@ -636,28 +636,65 @@ return o+f.rc.map(function(r){var q=S.lang==='tr'&&r.tr?r.tr:r;return '<div clas
 function fMove(f,T){var w=WO();return '<div class="card"><div class="s">'+L('Today\u2019s workout','Bugünkü antrenman')+' \u00b7 '+burned()+' kcal</div>'+w.items.map(function(x,i){var d=w.done.indexOf(i)>-1;return '<div class="bk"><button class="ck'+(d?' on':'')+'" style="width:34px;height:34px;font-size:15px" data-a="wtog" data-i="'+i+'">'+(d?'\u2713':'')+'</button><span style="flex:1">'+esc(G(x,'t'))+'</span><span class="s">'+x.k+' kcal</span></div>'}).join('')+'<button class="btn o" style="margin-top:10px" data-a="gwo"'+(busy?' disabled':'')+'>'+(busy==='wo'?L('Thinking\u2026','Düşünüyorum\u2026'):L('Personalise with AI','Yapay zekâ ile kişiselleştir'))+'</button>'+trBtn()+'</div>'}
 function render(){applySkin();render0();tr()}
 
-/* ===== profile + clicker ===== */
+/* ===== profile + pixel cat ===== */
 function NM(k){return k==='me'&&UNAME?String(UNAME).split(' ')[0]:NAMES[k]}
 function fmt(n){return Math.floor(n).toLocaleString()}
-function CL(){var c=S.cl=S.cl||{};c.c=c.c||0;c.p=c.p||0;c.a=c.a||0;c.sp=c.sp||0;return c}
-function clPow(){return lvl()+CL().p}
-function clCostP(){return Math.round(15*Math.pow(1.6,CL().p))}
-function clCostA(){return Math.round(50*Math.pow(1.7,CL().a))}
-function clPts(){return Math.max(0,S.xp-CL().sp)}
 function prof(){var p=S.ph&&S.ph.avatar,n=UNAME||'Me';return '<div style="display:flex;align-items:center;gap:14px;margin:16px 0"><label class="av" style="background:'+(p?"url('"+p+"') center/cover":'var(--g)')+'">'+(p?'':esc(n.charAt(0).toUpperCase()))+'<input type="file" accept="image/*" class="pf" data-k="avatar"></label><div><b style="font-size:22px">'+esc(n)+'</b><div class="s">'+L('Tap the photo to change it','Fotoğrafı değiştirmek için dokun')+'</div></div></div>'}
-function game(){var c=CL();return '<h2>'+L('Clicker','Tıklama Oyunu')+'</h2><div class="card c ck"><div class="s">'+L('Coins','Altın')+'</div><div class="serif" id="ckc" style="font-size:52px;line-height:1.1">'+fmt(c.c)+'</div><button class="btn o" data-a="ck-tap" style="width:100%;height:110px;font-size:26px;margin:12px 0">+'+clPow()+' '+L('per tap','dokunuş başına')+'</button><div class="s">'+L('Auto','Otomatik')+': '+c.a+'/'+L('sec','sn')+'</div><div style="display:flex;gap:8px;margin-top:12px"><button class="btn g" style="flex:1" data-a="ck-up" data-v="p">'+L('Stronger tap','Güçlü dokunuş')+'<br>'+fmt(clCostP())+'</button><button class="btn g" style="flex:1" data-a="ck-up" data-v="a">'+L('Auto +1/sec','Otomatik +1/sn')+'<br>'+fmt(clCostA())+'</button></div><button class="btn g" style="width:100%;margin-top:8px" data-a="ck-cv">'+L('Trade 50 points for 500 coins','50 puanı 500 altınla değiştir')+' ('+fmt(clPts())+' '+L('pts','puan')+')</button><p class="s">'+L('Your level adds to every tap. Points come from completing tasks.','Seviyen her dokunuşa eklenir. Puanlar görevlerden gelir.')+'</p></div>'}
-var ckT=0,ckA=0;
-function ckUi(){var e=document.getElementById('ckc');if(e)e.textContent=fmt(CL().c)}
-function ckSave(){clearTimeout(ckT);ckT=setTimeout(save,3000)}
-document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-a^="ck-"]');if(!b)return;e.stopPropagation();e.preventDefault();var a=b.dataset.a,c=CL();
-if(a==='ck-tap'){c.c+=clPow();ckUi();ckSave();return}
-if(a==='ck-up'){var k=b.dataset.v,cost=k==='p'?clCostP():clCostA();if(c.c<cost)return;c.c-=cost;c[k]++;save();render();return}
-if(a==='ck-cv'){if(clPts()<50)return;c.sp+=50;c.c+=500;save();render()}
-},true);
-setInterval(function(){if(!UID)return;var c=CL();if(!c.a)return;c.c+=c.a;ckUi();if(!ckA)ckA=setTimeout(function(){ckA=0;save()},20000)},1000);
+var PZ_CATS=[['Mango','#e8943a','#fbe3c4','#2b1a12','#2b1a12'],['Smoky','#8d96a3','#e3e8ee','#232831','#232831'],['Shadow','#3b3b48','#6d6d80','#14141c','#ffd84d'],['Snow','#f4f4f6','#ffffff','#7d7d92','#2a2a3a']];
+var PZ_S=["..oo......oo..",".obbo....obbo.",".obbbooooobbbo","obbbbbbbbbbbbo","obbeebbbbeebbo","obbeebbbbeebbo","obbbbbnnbbbbbo","obbbbbbbbbbbbo",".obbbbbbbbbbo.",".obbwwwwwwbbo.",".obbwwwwwwbbo.",".obbbwwwwbbbo.",".oobbbbbbbboo.","..oooo..oooo.."];
+var PZ_C={r:'#e23b4e',y:'#ffd84d',k:'#15151c'};
+var PZ_F=[{id:'milk',n:['Milk','Süt'],p:8,e:25},{id:'fish',n:['Fish','Balık'],p:25,e:60},{id:'cake',n:['Cake','Pasta'],p:70,e:100}];
+var PZ_CL=[{id:'party',s:'h',n:['Party hat','Parti şapkası'],p:40,g:{1:'......yy......',2:'.....rrrr.....',3:'....rrrrrr....'}},{id:'crown',s:'h',n:['Crown','Taç'],p:200,g:{2:'....y.yy.y....',3:'....yyyyyy....'}},{id:'shades',s:'f',n:['Sunglasses','Güneş gözlüğü'],p:70,g:{6:'...kkkkkkkk...',7:'...kk....kk...'}},{id:'scarf',s:'n',n:['Scarf','Atkı'],p:55,g:{10:'..rrrrrrrrrr..',11:'.......rr.....'}}];
+var PZ_H=[{id:'box',n:['Cardboard box','Karton kutu'],p:0,r:0},{id:'bed',n:['Cozy bed','Rahat yatak'],p:250,r:1},{id:'tower',n:['Cat tower','Kedi kulesi'],p:900,r:3},{id:'house',n:['Little house','Küçük ev'],p:3000,r:8}];
+var pzTb='food',pzT=0;
+function PZ(){var p=S.pet=S.pet||{};p.c=p.c||0;p.p=p.p||0;p.a=p.a||0;p.sp=p.sp||0;if(p.e==null){p.e=100;p.t=Date.now()}p.ow=p.ow||{box:1};p.eq=p.eq||{h:'',f:'',n:'',home:'box'};return p}
+function pzE(){var p=PZ();return Math.max(0,p.e-(Date.now()-p.t)/15000)}
+function pzGain(){return Math.max(1,Math.round((1+PZ().p)*(pzE()>0?1:.5)))}
+function pzRate(){var p=PZ(),h=PZ_H.filter(function(x){return x.id===p.eq.home})[0];return (h?h.r:0)+p.a}
+function pzPts(){return Math.max(0,S.xp-PZ().sp)}
+function pzDraw(cv,p,mini){var W=mini?14:26,H=mini?16:18,x=cv.getContext('2d'),cc=PZ_CATS[p.k]||PZ_CATS[0],ox=mini?0:6,eq=p.eq||{};cv.width=W;cv.height=H;
+var f=function(c,a,b,w,h){x.fillStyle=c;x.fillRect(a,b,w,h)};
+if(!mini){f('#262b44',0,0,W,16);f('#4a3b57',0,16,W,2);f('#ffffff66',3,3,1,1);f('#ffffff66',22,2,1,1);f('#ffffff66',12,1,1,1);
+var h=eq.home;
+if(h==='box'){f('#b98a5a',20,11,6,5);f('#8a6238',20,11,6,1);f('#8a6238',22,13,2,3)}
+else if(h==='bed'){f('#c0476a',19,13,7,3);f('#f5d0da',19,12,3,1);f('#7a2a45',19,15,7,1)}
+else if(h==='tower'){f('#a1784f',22,3,2,13);f('#c9a070',19,5,7,1);f('#c9a070',19,10,7,1);f('#a1784f',19,15,7,1)}
+else if(h==='house'){f('#c97b4a',20,9,6,7);f('#8a3b2e',19,8,8,1);f('#8a3b2e',20,7,6,1);f('#8a3b2e',21,6,4,1);f('#8a3b2e',22,5,2,1);f('#3a2418',22,12,2,4)}}
+var pal={b:cc[1],w:cc[2],o:cc[3],e:cc[4],n:'#ff8fa3'};
+PZ_S.forEach(function(r,y){for(var i=0;i<14;i++){if(r[i]!=='.')f(pal[r[i]],ox+i,y+2,1,1)}});
+if(!mini)PZ_CL.forEach(function(c){if(eq[c.s]===c.id)for(var y in c.g)for(var i=0;i<14;i++){var ch=c.g[y][i];if(ch!=='.')f(PZ_C[ch],ox+i,+y,1,1)}})}
+function pzRow(n,sub,lab,z,v,dis){return '<div class="pz-row"><div>'+n+'<br><span style="color:#9a93b8">'+sub+'</span></div><button class="pz-b" data-z="'+z+'" data-v="'+v+'"'+(dis?' disabled':'')+'>'+lab+'</button></div>'}
+function pzTab(p){var h='';
+if(pzTb==='food')PZ_F.forEach(function(f){h+=pzRow(L(f.n[0],f.n[1]),'+'+f.e+' '+L('energy','enerji'),f.p,'food',f.id,p.c<f.p)});
+else if(pzTb==='cl')PZ_CL.forEach(function(c){var o=p.ow[c.id],w=p.eq[c.s]===c.id;h+=pzRow(L(c.n[0],c.n[1]),o?(w?L('Wearing','Giyiyor'):L('Owned','Sende')):'',o?(w?L('Remove','Çıkar'):L('Wear','Giy')):c.p,o?'wear':'buyc',c.id,!o&&p.c<c.p)});
+else if(pzTb==='home')PZ_H.forEach(function(c){var o=p.ow[c.id],u=p.eq.home===c.id;h+=pzRow(L(c.n[0],c.n[1]),'+'+c.r+' '+L('coins/sec','altın/sn'),o?(u?L('In use','Kullanımda'):L('Use','Kullan')):c.p,'home',c.id,(!o&&p.c<c.p)||u)});
+else if(pzTb==='up'){var c1=60*(p.p+1),c2=120*(p.a+1),pt=pzPts();h+='<div style="margin-bottom:8px">'+L('Points','Puan')+': '+fmt(pt)+'</div>'+pzRow(L('Coins per tap','Dokunuş başına altın'),L('Now','Şimdi')+': '+(1+p.p),c1+' XP','up','p',pt<c1)+pzRow(L('Auto coins','Otomatik altın'),L('Now','Şimdi')+': +'+p.a+'/'+L('sec','sn'),c2+' XP','up','a',pt<c2)}
+else PZ_CATS.forEach(function(c,i){h+=pzRow(c[0],p.k===i?L('Current','Seçili'):'',L('Switch','Değiştir'),'pick',i,p.k===i)});
+return h}
+function pzRender(){var p=PZ(),o=document.getElementById('pz');if(!o)return;
+var h='<div class="pz-top"><button class="pz-b" data-z="back">&lt; '+L('Back','Geri')+'</button><div class="pz-c"><i class="pz-coin"></i><b id="pzc">'+fmt(p.c)+'</b></div></div>';
+if(p.k==null){h+='<p>'+L('Choose your cat','Kedini seç')+'</p><div class="pz-g">'+PZ_CATS.map(function(c,i){return '<button class="pz-b" data-z="pick" data-v="'+i+'"><canvas class="pzp" data-i="'+i+'"></canvas>'+c[0]+'</button>'}).join('')+'</div>';o.innerHTML=h;o.querySelectorAll('.pzp').forEach(function(cv){pzDraw(cv,{k:+cv.dataset.i},1)});return}
+h+='<div class="pz-sc" data-z="tap"><canvas id="pzv"></canvas></div><div class="pz-bar"><i id="pze"></i></div><div id="pzs" style="text-align:center"></div><div class="pz-tabs">'+[['food','Food','Yemek'],['cl','Clothes','Kıyafet'],['home','Home','Ev'],['up','Upgrades','Geliştir'],['cat','Cat','Kedi']].map(function(t){return '<button class="pz-b'+(pzTb===t[0]?' on':'')+'" data-z="tab" data-v="'+t[0]+'">'+L(t[1],t[2])+'</button>'}).join('')+'</div>'+pzTab(p);
+o.innerHTML=h;pzDraw(document.getElementById('pzv'),p,0);pzSt()}
+function pzSt(){var e=document.getElementById('pze');if(!e)return;e.style.width=pzE()+'%';document.getElementById('pzs').textContent='+'+pzGain()+' / '+L('tap','dokunuş')+' · '+L('Energy','Enerji')+' '+Math.round(pzE())+'%';document.getElementById('pzc').textContent=fmt(PZ().c)}
+function pzOpen(){var o=document.getElementById('pz');if(!o){o=document.createElement('div');o.id='pz';document.body.appendChild(o);
+o.addEventListener('pointerdown',function(e){var b=e.target.closest('[data-z="tap"]');if(!b)return;var p=PZ(),g=pzGain();p.c+=g;pzSt();clearTimeout(pzT);pzT=setTimeout(save,3000);var r=b.getBoundingClientRect(),t=document.createElement('div');t.className='pz-f';t.textContent='+'+g;t.style.left=(e.clientX-r.left)+'px';t.style.top=(e.clientY-r.top-20)+'px';b.appendChild(t);setTimeout(function(){t.remove()},700);var cv=b.firstChild;cv.style.transform='scale(.97)';setTimeout(function(){cv.style.transform=''},70)});
+o.addEventListener('click',function(e){var b=e.target.closest('[data-z]');if(!b||b.dataset.z==='tap')return;var z=b.dataset.z,v=b.dataset.v,p=PZ(),f;
+if(z==='back'){o.remove();save();render();return}
+if(z==='tab')pzTb=v;
+else if(z==='pick')p.k=+v;
+else if(z==='food'){f=PZ_F.filter(function(x){return x.id===v})[0];if(p.c<f.p)return;p.c-=f.p;p.e=Math.min(100,pzE()+f.e);p.t=Date.now()}
+else if(z==='buyc'){f=PZ_CL.filter(function(x){return x.id===v})[0];if(p.c<f.p||p.ow[v])return;p.c-=f.p;p.ow[v]=1;p.eq[f.s]=v}
+else if(z==='wear'){f=PZ_CL.filter(function(x){return x.id===v})[0];p.eq[f.s]=p.eq[f.s]===v?'':v}
+else if(z==='home'){f=PZ_H.filter(function(x){return x.id===v})[0];if(!p.ow[v]){if(p.c<f.p)return;p.c-=f.p;p.ow[v]=1}p.eq.home=v}
+else if(z==='up'){var c=v==='p'?60*(p.p+1):120*(p.a+1);if(pzPts()<c)return;p.sp+=c;p[v]++}
+save();pzRender()})}
+pzRender()}
+function game(){var p=PZ();return '<h2>'+L('Pixel Cat','Piksel Kedi')+'</h2><div class="card c"><div class="s">'+L('Tap your cat, earn coins, buy food, clothes and a home.','Kedine dokun, altın kazan; yemek, kıyafet ve ev al.')+'</div><div class="serif" style="font-size:40px">'+fmt(p.c)+' '+L('coins','altın')+'</div><button class="btn o" style="width:100%;margin-top:10px" data-a="pz-open">'+L('Play','Oyna')+'</button></div>'}
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-a="pz-open"]');if(!b)return;e.stopPropagation();e.preventDefault();pzOpen()},true);
+setInterval(function(){if(!UID||!document.getElementById('pzv'))return;var p=PZ();p.c+=pzRate();pzSt();if(!pzT)pzT=setTimeout(function(){pzT=0;save()},20000)},1000);
 document.addEventListener('visibilitychange',function(){if(document.hidden&&UID)save()});
-(function(){var st=document.createElement('style');st.textContent='.av{position:relative;display:flex;align-items:center;justify-content:center;width:76px;height:76px;flex:none;border-radius:50%;border:3px solid #ffffff33;color:#000;font-weight:700;font-size:32px;cursor:pointer;overflow:hidden}.av input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}.ck button{touch-action:manipulation;user-select:none;-webkit-user-select:none}';document.head.appendChild(st)})();
-
+(function(){var l=document.createElement('link');l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap';document.head.appendChild(l);var st=document.createElement('style');st.textContent='.av{position:relative;display:flex;align-items:center;justify-content:center;width:76px;height:76px;flex:none;border-radius:50%;border:3px solid #ffffff33;color:#000;font-weight:700;font-size:32px;cursor:pointer;overflow:hidden}.av input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}#pz{position:fixed;inset:0;z-index:250;background:#14121f;color:#f4f4f5;overflow-y:auto;padding:calc(env(safe-area-inset-top,0px) + 12px) 14px 30px;font:10px/1.7 "Press Start 2P",monospace}.pz-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.pz-b{font:inherit;background:#3a3358;color:#fff;border:0;padding:10px 12px;box-shadow:inset -3px -3px #231e3a,inset 3px 3px #5a4f8a;cursor:pointer;touch-action:manipulation}.pz-b:disabled{opacity:.4}.pz-b.on{background:#e5173f}.pz-c{display:flex;align-items:center;gap:8px;font-size:12px}.pz-coin{display:inline-block;width:12px;height:12px;background:#ffd84d;box-shadow:inset -2px -2px #c9a227}.pz-sc{position:relative;max-width:340px;margin:0 auto;touch-action:manipulation;user-select:none;-webkit-user-select:none}#pz canvas{image-rendering:pixelated;width:100%;display:block;transition:transform .07s}.pz-bar{height:12px;background:#2a2540;margin:10px auto;max-width:340px;box-shadow:inset 0 0 0 2px #5a4f8a}.pz-bar i{display:block;height:100%;background:#6fe08a}.pz-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}.pz-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px;margin-bottom:8px;background:#201b33}.pz-g{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pz-g canvas{width:84px!important;margin:0 auto 8px}.pz-f{position:absolute;pointer-events:none;color:#ffd84d;font-size:14px;animation:pzf .7s forwards}@keyframes pzf{to{transform:translateY(-50px);opacity:0}}';document.head.appendChild(st)})();
 render();initAcct();
 try{if(window.claude&&claude.use)claude.use('downloads').then(function(d){if(d){DL=d;render()}}).catch(function(){});if(window.claude&&claude.use)claude.use('sample').then(function(s){if(s){SM=s;render()}}).catch(function(){})}catch(e){}
 </script>
